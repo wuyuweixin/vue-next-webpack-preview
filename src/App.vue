@@ -10,7 +10,7 @@
     <tr>
       <td>Number</td>
       <td>{{count}}</td>
-      <td>{{scount}}</td>
+      <td>{{cCount}}</td>
     </tr>
     <tr>
       <td>String</td>
@@ -20,12 +20,12 @@
     <tr>
       <td>Array[0]</td>
       <td>{{list[0]}}</td>
-      <td>{{slist[0]}}</td>
+      <td>{{cList[0]}}</td>
     </tr>
     <tr>
       <td>Array[1]</td>
       <td>{{list[1]}}</td>
-      <td>{{slist[1]}}</td>
+      <td>{{cList[1]}}</td>
     </tr>
     <tr>
       <td>Object</td>
@@ -35,12 +35,12 @@
     <tr>
       <td>ref</td>
       <td></td>
-      <td>{{scount}}</td>
+      <td>{{cCount}}</td>
     </tr>
     <tr>
       <td>state</td>
       <td></td>
-      <td>{{scount}}</td>
+      <td>{{cCount}}</td>
     </tr>
     <tr>
       <td>state.ext</td>
@@ -50,16 +50,16 @@
     <tr>
       <td>state.Array[0]</td>
       <td></td>
-      <td>{{state.slist[0]}}</td>
+      <td>{{state.list[0]}}</td>
     </tr>
     <tr>
       <td>state.Array[1]</td>
       <td></td>
-      <td>{{state.slist[1]}}</td>
+      <td>{{state.list[1]}}</td>
     </tr>
     <tr>
       <td>computed</td>
-      <td>{{computedCount}}</td>
+      <td>{{computedValue}}</td>
       <td>{{computedVal}}</td>
     </tr>
     <tr>
@@ -69,46 +69,103 @@
     </tr>
   </table>
   <div style="display: flex">
-    <div @click="inc" class="btn">classic</div>
-    <div @click="sinc" class="btn">composition</div>
+    <div @click="classic" class="btn">classic</div>
+    <div @click="composition" class="btn">composition</div>
   </div>
 </template>
 
 <script>
-  import {ref, reactive, watch, computed} from 'vue'
+  import {
+    ref,
+    reactive,
+    watch,
+    computed,
+    onBeforeMount,
+    onUpdated,
+    onActivated,
+    onBeforeUnmount,
+    onBeforeUpdate,
+    onDeactivated,
+    onErrorCaptured,
+    onMounted,
+    onRenderTracked,
+    onRenderTriggered,
+    onUnmounted
+  } from 'vue'
+
+  const debug = false
+
+  function log(msg = '') {
+    debug && console.log(msg)
+  }
 
   export default {
     setup() {
       const state = reactive({
         name: '',
-        slist: [1, 2]
+        list: [1, 2]
       })
-      const scount = ref(0)
+      const cCount = ref(0)
       const watchVal = ref(0)
-      const slist = [2, 3]
-      const sinc = () => {
-        scount.value++
-        state.slist[0]++
-        state.slist[1]++
-        slist[0]++
-        slist[1]++
-        state.ext = 10 * scount.value
+      const cList = [2, 3]
+      const composition = () => {
+        cCount.value++
+        state.list[0]++
+        state.list[1]++
+        cList[0]++
+        cList[1]++
+        state.ext = 10 * cCount.value
         state.name = Math.random().toString(36).replace(/^0./, '')
       }
       watch(() => {
-        watchVal.value = scount.value + 2
+        watchVal.value = cCount.value + 2
       })
       const computedVal = computed(() => {
-        return scount.value + 1
+        return cCount.value + 1
       })
 
+      onBeforeMount(() => {
+        log('composition:onBeforeMount')
+      })
+      onUpdated(() => {
+        log('composition:onUpdated')
+      })
+      onActivated(() => {
+        log('composition:onActivated')
+      })
+      onBeforeUnmount(() => {
+        log('composition:onBeforeUnmount')
+      })
+      onBeforeUpdate(() => {
+        log('composition:onBeforeUpdate')
+      })
+      onDeactivated(() => {
+        log('composition:onDeactivated')
+      })
+      onErrorCaptured(() => {
+        log('composition:onErrorCaptured')
+      })
+      onMounted(() => {
+        log('composition:onMounted')
+      })
+      onRenderTracked((e) => {
+        log(e)
+        log('composition:onRenderTracked')
+      })
+      onRenderTriggered((e) => {
+        log(e)
+        log('composition:onRenderTriggered')
+      })
+      onUnmounted(() => {
+        log('composition:onUnmounted')
+      })
       return {
         state,
-        slist,
-        scount,
+        cList,
+        cCount,
         watchVal,
         computedVal,
-        sinc
+        composition
       }
     },
     data() {
@@ -120,14 +177,14 @@
       }
     },
     methods: {
-      inc() {
+      classic() {
         this.count++
         this.list[0]++
         this.list[1]++
       }
     },
     computed: {
-      computedCount() {
+      computedValue() {
         return this.count + 2
       }
     },
@@ -135,39 +192,39 @@
       count(newValue, oldValue) {
         this.watchValue = oldValue
       },
-      scount(newValue) {
-        console.log(newValue)
+      cCount(newValue) {
+        log(newValue)
       }
     },
     beforeCreate() {
-      console.log('beforeCreate')
+      log('classic:beforeCreate')
     },
     created() {
-      console.log('created')
+      log('classic:created')
     },
     beforeMount() {
-      console.log('beforeMount')
+      log('classic:beforeMount')
     },
     mounted() {
-      console.log('mounted')
+      log('classic:mounted')
     },
     beforeUpdate() {
-      console.log('beforeUpdate')
+      log('classic:beforeUpdate')
     },
     beforeUnmount() {
-      console.log('beforeUnmount')
+      log('classic:beforeUnmount')
     },
     deactivated() {
-      console.log('deactivated')
+      log('classic:deactivated')
     },
     activated() {
-      console.log('activated')
+      log('classic:activated')
     },
     unmounted() {
-      console.log('unmounted')
+      log('classic:unmounted')
     },
     updated() {
-      console.log('updated')
+      log('classic:updated')
     }
   }
 </script>
@@ -218,7 +275,6 @@
   .composition {
     width: 36%;
   }
-
 
   img {
     height: 45px;
