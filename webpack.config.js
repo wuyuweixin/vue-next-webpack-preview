@@ -51,8 +51,6 @@ module.exports = (env = {}) => ({
     })
   ],
   devServer: {
-    host: '0.0.0.0',
-    port: 80,
     inline: true,
     hot: true,
     stats: 'minimal',
