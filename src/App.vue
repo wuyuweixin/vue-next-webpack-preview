@@ -1,6 +1,8 @@
 <template>
-  <div class="top"><img src="./logo.png" alt="">
-    <h1>Hello Vue 3!</h1></div>
+  <div class="top">
+    <img src="./logo.png" alt="">
+    <h1>Hello Vue 3!</h1>
+  </div>
   <table>
     <tr>
       <th class="type">type</th>
@@ -93,7 +95,7 @@
     onUnmounted
   } from 'vue'
 
-  const debug = false
+  const debug = true
 
   function log(msg = '') {
     debug && console.log(msg)
